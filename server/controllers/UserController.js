@@ -25,15 +25,30 @@ class UserController {
       .then(async (foundUser) => {
         if (foundUser) return new Promise((resolve, reject) => reject(new Error(409)));
 
-        const bcryptHash = await bcrypt.hash(user.password, 10);
+        // Hash password only if provided (local users)
+        const bcryptHash = user.password ? await bcrypt.hash(user.password, 10) : null;
 
-        return db.User.create({
+        // Build user data object
+        const userData = {
           name: user.name,
           email: user.email,
           password: bcryptHash,
           icon: user.icon,
-          active: true,
-        });
+          active: user.active !== undefined ? user.active : true,
+        };
+
+        // Add Azure fields if provided (optional)
+        if (user.azureId) {
+          userData.azureId = user.azureId;
+        }
+        if (user.authProvider) {
+          userData.authProvider = user.authProvider;
+        }
+        if (user.azureLinkedAt) {
+          userData.azureLinkedAt = user.azureLinkedAt;
+        }
+
+        return db.User.create(userData);
       })
       .then((newUser) => {
         gNewUser = newUser;
@@ -196,6 +211,17 @@ class UserController {
         throw new Error(401);
       }
 
+      // Check if Azure SSO is enabled and user is Azure-only
+      const azureEnabled = settings.azure && settings.azure.clientId;
+      if (azureEnabled && foundUser.authProvider === "azure" && !foundUser.password) {
+        throw new Error("AZURE_ONLY");
+      }
+
+      // Check if user has a password for local auth
+      if (!foundUser.password) {
+        throw new Error(401);
+      }
+
       let isAuthenticated = false;
 
       if (foundUser.password.startsWith("$2a$") || foundUser.password.startsWith("$2b$") || foundUser.password.startsWith("$2y$")) {
@@ -322,6 +348,7 @@ class UserController {
         return this.findById(id);
       })
       .catch((error) => {
+        console.error("UserController.update error:", error);
         return new Promise((resolve, reject) => reject(new Error(error)));
       });
   }
@@ -654,6 +681,33 @@ class UserController {
     return db.PinnedDashboard.findAll({
       where: { user_id: userId },
     });
+  }
+
+  findByAzureId(azureId) {
+    return db.User.findOne({
+      where: { azureId },
+      include: [{ model: db.TeamRole }],
+    }).then((user) => {
+      return user;
+    }).catch((error) => {
+      return new Promise((resolve, reject) => reject(error.message));
+    });
+  }
+
+  async verifyPassword(user, password) {
+    try {
+      if (!user.password) {
+        return false;
+      }
+
+      if (user.password.startsWith("$2a$") || user.password.startsWith("$2b$") || user.password.startsWith("$2y$")) {
+        return await bcrypt.compare(password, user.password);
+      }
+
+      return user.password === sc.encrypt(password);
+    } catch (error) {
+      return false;
+    }
   }
 }
 

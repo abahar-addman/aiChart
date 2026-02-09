@@ -180,7 +180,7 @@ function TopNav() {
             </Button>
           )}
 
-          <Dropdown aria-label="Select a help option">
+          {/* <Dropdown aria-label="Select a help option">
             <DropdownTrigger>
               <Button
                 variant="light"
@@ -215,7 +215,7 @@ function TopNav() {
                 {"Feedback"}
               </DropdownItem>
             </DropdownMenu>
-          </Dropdown>
+          </Dropdown> */}
 
           <Button
             isIconOnly

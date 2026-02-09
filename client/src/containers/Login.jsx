@@ -8,11 +8,13 @@ import {
 import _ from "lodash";
 
 import LoginForm from "../components/LoginForm";
+import AzureLoginButton from "../components/AzureLoginButton";
 import { cleanErrors as cleanErrorsAction } from "../actions/error";
 import cbLogoSmall from "../assets/logo_inverted.png";
 import Row from "../components/Row";
 import Text from "../components/Text";
 import { relog } from "../slices/user";
+import { isAzureConfigured } from "../config/azureConfig";
 
 /*
   Login container with an embedded login form
@@ -23,6 +25,12 @@ function Login(props) {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const azureEnabled = isAzureConfigured();
+
+  // Check for Azure error in URL params
+  const params = new URLSearchParams(window.location.search);
+  const azureError = params.get("error");
+  const azureMessage = params.get("message");
 
   useEffect(() => {
     cleanErrors();
@@ -49,6 +57,28 @@ function Login(props) {
             <h1 className={"mt-4 text-xl font-bold"}>{"Welcome back to Chartbrew"}</h1>
           </CardHeader>
           <CardBody>
+            {azureEnabled && (
+              <>
+                <AzureLoginButton />
+                <Spacer y={4} />
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 h-px bg-divider" />
+                  <Text className="text-default-400 text-sm">Or sign in with email</Text>
+                  <div className="flex-1 h-px bg-divider" />
+                </div>
+                <Spacer y={4} />
+              </>
+            )}
+            {azureError && (
+              <>
+                <div className="p-3 bg-danger-50 border border-danger-200 rounded-lg">
+                  <Text className="text-danger text-sm">
+                    {azureMessage || "Azure authentication failed. Please try again."}
+                  </Text>
+                </div>
+                <Spacer y={2} />
+              </>
+            )}
             <LoginForm />
           </CardBody>
           {loginError && (

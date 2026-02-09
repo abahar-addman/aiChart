@@ -44,6 +44,7 @@ const PublicDashboard = lazy(() => import("./PublicDashboard/PublicDashboard"));
 const PasswordReset = lazy(() => import("./PasswordReset"));
 const EmbeddedChart = lazy(() => import("./EmbeddedChart"));
 const GoogleAuth = lazy(() => import("./GoogleAuth"));
+const AzureCallback = lazy(() => import("./AzureCallback"));
 const ProjectRedirect = lazy(() => import("./ProjectRedirect"));
 import FeedbackForm from "../components/FeedbackForm";
 import canAccess from "../config/canAccess";
@@ -67,6 +68,8 @@ function authenticatePage() {
   } else if (window.location.pathname === "/invite") {
     return false;
   } else if (window.location.pathname === "/feedback") {
+    return false;
+  } else if (window.location.pathname === "/azure-callback") {
     return false;
   } else if (window.location.pathname.indexOf("embedded") > -1) {
     return false;
@@ -256,6 +259,7 @@ function Main(props) {
               />
               <Route exact path="/signup" element={<Signup />} />
               <Route exact path="/google-auth" element={<GoogleAuth />} />
+              <Route exact path="/azure-callback" element={<AzureCallback />} />
               <Route exact path="/login" element={<Login />} />
               <Route exact path="/user" element={<UserDashboard />} />
               <Route exact path="/user/profile" element={<ManageUser />} />

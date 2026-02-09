@@ -11,6 +11,7 @@ const google = require("./GoogleRoute");
 const update = require("./UpdateRoute");
 const integration = require("./IntegrationRoute");
 const ai = require("./AiRoute");
+const azure = require("./AzureRoute");
 
 module.exports = {
   team,
@@ -26,4 +27,5 @@ module.exports = {
   update,
   integration,
   ai,
+  azure,
 };

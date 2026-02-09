@@ -216,7 +216,7 @@ function NavbarContainer() {
           </NavbarItem>
           <Dropdown aria-label="Select a help option">
             <NavbarItem>
-              <DropdownTrigger>
+              {/* <DropdownTrigger>
                 <Button
                   variant="light"
                   disableRipple
@@ -226,7 +226,7 @@ function NavbarContainer() {
                 >
                   Resources
                 </Button>
-              </DropdownTrigger>
+              </DropdownTrigger> */}
             </NavbarItem>
             <DropdownMenu variant="faded" onAction={(key) => _onDropdownAction(key)}>
               <DropdownItem startContent={<TbBrandDiscord />} key="discord" textValue="Join our Discord">

@@ -108,7 +108,7 @@ function AccountNav() {
   
   return (
     <div className="flex flex-col items-start w-full">
-      <Listbox aria-label="Account actions" variant="flat">
+      {/* <Listbox aria-label="Account actions" variant="flat">
         <ListboxItem
           startContent={<LuHeartHandshake size={18} />}
           onPress={() => _onDropdownAction("resources")}
@@ -153,7 +153,7 @@ function AccountNav() {
         >
           <div className={"hidden sm:block text-sm"}>Updates</div>
         </ListboxItem>
-      </Listbox>
+      </Listbox> */}
       <Dropdown aria-label="Select a user option" placement="right-end" className="justify-start">
         <DropdownTrigger className="flex flex-row justify-start">
           <div className="flex flex-row justify-between items-center cursor-pointer hover:bg-content2 rounded-lg w-full p-2">
